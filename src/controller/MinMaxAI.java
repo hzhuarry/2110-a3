@@ -76,10 +76,45 @@ public abstract class MinMaxAI extends Controller {
 	 * <p>choosing a higher value for depth makes the AI smarter, but requires
 	 * more time to select moves.
 	 */
+	private int depth;
 	protected MinMaxAI(Player me, int depth) {
 		super(me);
-		// TODO Auto-generated method stub
-		throw new NotImplementedException();
+		this.depth=depth;
+	}
+	
+	//helper method
+	private @NonNull int getScore(Board b, Player p, int d)
+	{
+		if(b.getState()==Board.State.HAS_WINNER&&b.getWinner().winner==me) {
+			return Integer.MAX_VALUE;
+		}
+		
+		else if(b.getState()==Board.State.HAS_WINNER&&b.getWinner().winner==me.opponent()) {
+			return Integer.MIN_VALUE;
+		}
+		else if(b.getState()==Board.State.DRAW) {
+			return 0;
+		}
+		else if(d==0) {
+			return estimate(b);
+		}
+		Integer nextBestMove=null;
+		for(Location l : moves(b)) {
+			int nextScore=getScore(b.update(p, l),p.opponent(),d-1);
+			if(nextBestMove==null) {
+				nextBestMove=nextScore;
+			}
+			if(p==me) {
+				nextBestMove=Integer.max(nextBestMove, nextScore);
+			}
+			else {
+				nextBestMove=Integer.min(nextBestMove,nextScore);
+			}
+		}
+		if(nextBestMove==null) {
+			return estimate(b);
+		}
+		return nextBestMove;
 	}
 
 	/**
@@ -87,7 +122,23 @@ public abstract class MinMaxAI extends Controller {
 	 * algorithm described above.
 	 */
 	protected @Override Location nextMove(Game g) {
-		// TODO Auto-generated method stub
-		throw new NotImplementedException();
+		Location bestNext=null;
+		int bestScore=Integer.MIN_VALUE;
+		
+		for(Location move: moves(g.getBoard())) {
+			Board next = g.getBoard().update(me, move);
+			//base
+			if(next.getState()==State.HAS_WINNER&&next.getWinner().winner==me) {
+				return move;
+			}
+			
+			int currScore= getScore(next,me.opponent(),depth-1);
+			if(currScore>bestScore) {
+				bestNext=move;
+				bestScore=currScore;
+			}
+		}
+		return bestNext;
 	}
+	
 }
