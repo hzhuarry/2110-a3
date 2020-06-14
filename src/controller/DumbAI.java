@@ -1,5 +1,6 @@
 package controller;
 
+import model.Board;
 import model.Game;
 import model.Location;
 import model.NotImplementedException;
@@ -16,12 +17,17 @@ public class DumbAI extends Controller {
 		// TODO Auto-generated constructor stub
 		throw new NotImplementedException();
 	}
-
+	
+	/**
+	 * returns the first empty available space. If no spaces are available, the location will be null
+	 */
 	protected @Override Location nextMove(Game g) {
-		// Note: Calling delay here will make the CLUI work a little more
-		// nicely when competing different AIs against each other.
-		
-		// TODO Auto-generated method stub
-		throw new NotImplementedException();
+		for(Location l: Board.LOCATIONS)
+		{
+			if(g.getBoard().get(l)==null) {
+				return l;
+			}
+		}
+		return null;
 	}
 }
