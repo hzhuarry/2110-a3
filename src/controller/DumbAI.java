@@ -14,8 +14,6 @@ public class DumbAI extends Controller {
 
 	public DumbAI(Player me) {
 		super(me);
-		// TODO Auto-generated constructor stub
-		throw new NotImplementedException();
 	}
 	
 	/**
